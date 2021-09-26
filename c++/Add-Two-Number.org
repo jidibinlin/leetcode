@@ -1,0 +1,123 @@
+* Add-Two-Number
+给你两个非空 的链表，表示两个非负的整数。它们每位数字都是按照?逆序?的方式存储的，并且每个节点只能存储一位数字。
+请你将两个数相加，并以相同形式返回一个表示和的链表。
+
+你可以假设除了数字 0 之外，这两个数都不会以 0开头。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/add-two-numbers
+
+** 题目解析
+
+这一题，数字是以链表的形式存储的，并且是倒序的。倒序，也就是说链表头是正好对上数字的个位。
+那么这题就好解了
+1. 直接遍历链表然后逐位相加
+2. 设置一个用来存储进位信息的变量carry，如果有进位，就将他存入carry当中
+3. 每次相加还需要带上carry
+4. 最后，要是carry不为零，还要为链表申请一个节点用来存储最高位
+*** c++ 代码实现
+
+#+begin_src cpp
+  /**
+   ,* Definition for singly-linked list.
+   ,* struct ListNode {
+   ,*     int val;
+   ,*     ListNode *next;
+   ,*     ListNode() : val(0), next(nullptr) {}
+   ,*     ListNode(int x) : val(x), next(nullptr) {}
+   ,*     ListNode(int x, ListNode *next) : val(x), next(next) {}
+   ,* };
+   ,*/
+  class Solution {
+  public:
+      ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+          ListNode *head = nullptr;
+          ListNode *tail = nullptr;
+          int carry = 0;
+          while (l1 || l2) { //有任意一个节点不为空，就需要继续遍历
+              int x = l1 ? l1->val:0; 
+              int y = l2 ? l2->val:0;
+              int sum = carry + x +y;
+
+              if(!head){ //第一次的时候，需要创建头节点
+                  head = tail = new ListNode(sum%10);
+              }else {
+                  tail->next = new ListNode(sum%10);
+                  tail = tail->next;
+              }
+
+              carry = sum/10; // 这里就比较关键了，要是sum不大于10 carry==0
+
+
+              if (l1) {
+                  l1=l1->next;
+              }
+
+              if(l2) {
+                  l2=l2->next;
+              }
+          }
+
+          if(carry > 0){ //说明循环便利完，还有进位
+              tail->next = new ListNode(carry);
+          }
+
+          return head;
+      }
+  };
+
+#+end_src
+
+*** lua 代码实现
+这里介绍下怎么用lua代码实现本题。要想用lua实现这一题有个问题要解决。
+- lua中没有链表,怎么用lua去实现一个链表 :: 解决办法就是用lua中的table去实现一个链表 
+  lua的table本身就是一个引用类型，所以是很好去构造一个链表的数据结构的
+  #+begin_src lua
+    ListNode = {
+       value=nil;
+       next=nil
+    }
+  #+end_src
++ 具体代码实现
+  #+begin_src lua
+    --[[
+    ListNode={
+       value = nil
+       next = nil
+       }
+    ]]
+    function addTwoNumbers(ListNode l1,ListNode l2)
+       ListNode head = nil;
+       ListNode tail = nil;
+       carry = 0
+       while (l1 || l2)
+       do
+          x = l1 ~= nil and l1.value or 0
+          x = l2 ~= nil and l2.value or 0
+          sum = carry + x+y
+
+          if head==nil then
+             head = tail={}
+             head.value = sum % 10
+          else
+             tail.next={}
+             next.value = sum % 10
+          end
+
+          carry = sum/10
+
+          if l1 then
+             l1 = l1.next
+          end
+
+          if l2 then
+             l2 = l2.next
+          end
+       end
+       if carry >0 then
+          tail.next = {}
+          tail.next.value = carry
+       end
+       return tail
+    end
+  #+end_src
