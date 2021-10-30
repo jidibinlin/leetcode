@@ -6,7 +6,6 @@ void quickSort(int *sortArray, int len) {
     if (len <= 1) {
         return;
     }
-
     int pivot = sortArray[0];
     int left = 1;
     int right = len - 1;
