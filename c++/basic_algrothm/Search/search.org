@@ -1,0 +1,76 @@
+* Search algrothm
+** Symbol table
+*** intro
+A symbol table is a data structure for key-value pairs that supports two operations: insert(put) a new pair into the table and search for (get) the value associate with a given key;
+Symbol table is to associate a value with a key. Like a dictionary, we can find the word which we want throuth the index. Or we can make a analogy between "symbol table" and "book index". The main purpose of then is extract the key of the content. Then we can find what we want quickly through the key.
+*** API
+**** Generic basic symbol table
+#+DOWNLOADED: screenshot @ 2021-10-28 10:11:54
+[[file:Search_algrothm/2021-10-28_10-11-54_screenshot.png]]
+***** Design
++ Generics :: make the methods without specifying the type of the items being processed
++ Duplicate keys ::
+  - no duplicate keys in a table.
+  - When a client puts a key-value pair into a table who already containing that key(and associated a value), the new value replaces the old one.
++ Null keys :: keys must not be null(like the array we can`t access the value of a array with key that`s not exist in the array)
++ Null values :: no key can be associated with a null value.
+  This conversion has two intended
+  + we can test whether or not the symbol table contains a value associated with a given key by test whether get() returns null.
+  + we can use the operation of calling put() with null as its second argument to implement deletion
++ Deletion :: 
+  + lazy deletion :: Just associate keys with null. Then perhaps remove all such keys at some later tiem.
+    #+begin_src c++
+      put(key,NULL)
+    #+end_src
+  + eager deletion :: Remove the key from the table immediately
++ Shorthand methods :: for clarity in client code, we include the methods contains()
+  and isEmpty() in the API
+    #+DOWNLOADED: screenshot @ 2021-10-25 18:47:28
+    [[file:Sort_algrothm/2021-10-25_18-47-28_screenshot.png]]
++ Iteration :: To enable clients to process all the key and values in the table
++ key equality ::  Determining whether or not a given key is in a symbol table is based on the concept of object equality
+**** Ordered symbol tables 
+#+DOWNLOADED: screenshot @ 2021-10-25 19:08:14
+[[file:Search_algrothm/2021-10-25_19-08-14_screenshot.png]]
+***** Design
+#+DOWNLOADED: screenshot @ 2021-10-28 10:17:01
+[[file:Search_algrothm/2021-10-28_10-17-01_screenshot.png]]
+keys must be Comparable object. So, in such implementations, we can keep the keys in order.
+#+begin_src c++ :name impletement compareTo()
+  int compareTo(T foo){
+      if(foo > this.foo)
+          return 1;
+      if(foo < this.foo)
+          return -1;
+      if (foo == this.foo)
+          return 0;
+  }
+#+end_src
++ Minimum and maximum :: return the minimum key or the maximum key
++ Floor :: find the lagest key that is less then or equal to the given key
++ ceiling :: find the smallest key that is greater than or equal to the given key
++ Rank :: find the number of keys less than a given key
++ select :: find the key with a given rank(i == rank(select(i)))
++ Range queries :: How many keys fall within a given range(between two given key)
++ Exception cases :: when a methods is to return a key and there is no key fitting a description in the table,out convention is to throw an exception (an alternate approach,which is also reasonable,would be to return null in such caces). For example,min(),max(),deleteMin(),deleteMax(),floor(),and ceiling() all throw exceptions if the table is empty,as does select(k) if k is less than 0 or not less than size()
++ Shorthand methods :: As we have already seen with isEmpty() and contains() in out basic API,we keep some redundant methods in the API for clarity in client code.We assume that the following default implementations are included in any implementation of the ordered symbol-table API unless otherwise specified;
+  #+DOWNLOADED: screenshot @ 2021-10-28 10:35:55
+  [[file:Search_algrothm/2021-10-28_10-35-55_screenshot.png]]
+
++ Key equality(revisited) :: The best practice in Java is to make compareTo() consistent with equals() in all Comparable types. That is, for every pair of values a and b in any given Comparable type, it should be the case that (a.compareTo(b) == 0) and a.equals(b) have then same value. To avoid any potential ambiguities, we avoid the use of equals() in ordered symbol-table implementations. Instead, we use compareTo() exclusively to compare keys: we take the boolean expression a.compareTo(b)==0 to mean "Are a b equal ?"
+
++ Cost model :: Whether we use equals() (for symbol tables where keys are not Comparable) or compareTo()(for ordered symbol tables with Comparable keys),we use the term compare to refer to the operation of comparing a symbol-table entry against a search key. In most symbol-table implementations,this operation is in the inner loop. In the few cases where that is not the case,we also count array accesses.
+*** Summery
+Symbol-table is to build a data structures whose purpose is to get value quickly through the key associated with the value.
+The main direction we need to discuss is how we develop a symbol-table implementation that can handle a huge number of get() operations on a large table,which itself was built with a large number of intermixed get() and put() operations.
+
+** Sequential search in an unordered linked list
+Use linked list to implement the underlying data structure of a symbol table.We search by considering the keys in the table one after another,using equals() to test for a match with search key. This method is known as *sequential search*.
+#+DOWNLOADED: screenshot @ 2021-10-28 16:48:59
+[[file:Search_algrothm/2021-10-28_16-48-59_screenshot.png]]
+
+*** implement
+#+begin_src c++ :file "none.cpp"
+
+#+end_src
+

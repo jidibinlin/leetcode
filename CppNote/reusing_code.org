@@ -1,0 +1,15 @@
+** Class Templates
+*Class Templates* provide a way to generate generic class declarations.Templates provide /parameterized/ types--that is, they are capable of passing a type name as an argument to a recipe for building a class or a function.
+*** Define a Class Template
+#+begin_src c++
+  template <class Type>;// old
+#+end_src
+The keyword *template* informs the compiler that you`re about to define a template. The part in angle brackets is analogous to an argument list to a function. You can think of the keyword *class* as serving as a type name for a variable that accept a type as value,and of *Type* is representing a name for this variable.
+
+Using class here doesn`t mean that type must be a class; it just means that Type serves as a generic type specifier for which a real type will be substituted when the template is used.
+
+#+begin_src c++
+  template <typename Type>;//Newer c++ implementations
+
+#+end_src
+Newer c++ implementations allow you to use the less confusing keyword typename instead of class in this context;
