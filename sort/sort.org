@@ -1,0 +1,75 @@
+* selection sort
+The main idea of this sort way is that traverse the array to sort and find the smallest element "s". Exchange "s" with the first element of the array.
+Then do the same thing to the sub array whose  index is start from the origin array`s second index.(etc origin array:1,2,3,4,subarray 2,3,4)
+#+begin_src c++ :tangle "selectionsort.cpp"
+  #include <algorithm>
+  #include <iostream>
+  //#include <stdlib>
+  #include <vector>
+  using namespace std;
+
+  void selectionSort(vector<int> &sortArray) {
+      for (int i = 0; i < sortArray.size(); ++i) {
+          int tmpIdx = i;
+          for (int j = i; j < sortArray.size(); ++j) {
+              if (sortArray[j] <= sortArray[tmpIdx]) {
+                  tmpIdx = j;
+              }
+          }
+          swap(sortArray[i],sortArray[tmpIdx]);
+      }
+  }
+
+  int main(int argc, char *argv[]) {
+      vector<int> s;
+      for (int i = 0; i < 10; ++i) {
+          s.push_back(rand()%10);
+      }
+
+      selectionSort(s);
+
+      for (int i = 0; i < 10; ++i) {
+          cout << s[i] <<" ";
+      }
+      return 0;
+  }
+#+end_src
+* quick sort
+#+begin_src c++ :tangle "quicksort.cpp"
+    #include <algorithm>
+    #include <iostream>
+    using namespace std;
+
+    void quickSort(int *sortArray, int len) {
+        if (len <= 1) {
+            return;
+        }
+        int pivot = sortArray[0];
+        int left = 1;
+        int right = len - 1;
+        while (left != right) {
+            while (sortArray[right] > pivot && left != right) {
+                right--;
+            }
+            while (sortArray[left] < pivot && left != right) {
+                left++;
+            }
+            swap(sortArray[left], sortArray[right]);
+        }
+
+        if (sortArray[0] >= sortArray[left]) {
+            swap(sortArray[0], sortArray[left]);
+        }
+        quickSort(&sortArray[0], left);
+        quickSort(&sortArray[left + 1], len - (left + 1));
+    }
+
+    int main(int argc, char *argv[]) {
+        int sortArray[10] = {2, 1};
+        quickSort(sortArray, 2);
+        for (int i = 0; i < 2; ++i) {
+            cout << sortArray[i] << " ";
+        }
+        return 0;
+    }
+#+end_src
