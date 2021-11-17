@@ -1,6 +1,6 @@
 * Problems description
+** Description
 Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.
-
 The overall run time complexity should be O(log (m+n)).
 
 来源：力扣（LeetCode）
@@ -47,7 +47,78 @@ The overall run time complexity should be O(log (m+n)).
     -106 <= nums1[i], nums2[i] <= 106
   #+end_src
 
+** analyze problem
+这道题第一想到思路是归并两个数组，然后找出中位数。但是这个思路的时间复杂为O(m+n),达不到题目的要求。如果是O(log(m+n))这样的复杂度，就需要考虑使用二分。问题是，这道题怎么使用二分。
+这道题让找出中位数，其实很容易就想到用二分去做这道题。
+ + 二分法就是将数组通过中位数划分为两个数组
+ + 二分法的时间复杂度正好也是o(log(n))级别的。
+ + 这道题并不一定就需要直接归并两个数组具体看下面分析。
 
-* Solution
-#+begin_src cpp :file Median_of_Two_Sorted_Arrays.cpp
+假设两个数组为数组x，数组y 首先中位数是数组中间的数，既然数组长度已知。
+#+begin_src c++
+  int total_length = x.size() + y.size()
+  int middle = math.floor(total_length / 2)
 #+end_src
+middle就是中位数所在的位置（如果数组总长度为2的倍数，后面去取中位数的时候是需要特殊处理的，因为无法直接通过索引取到）。
+这个时候问题就变成了，怎么在不合并这两个数组的情况下，找到中位数的位置（废话）。
+这里提供一个思路，由于前提条件，归并两个数组这条路是走不通的。但是，我们可以知道x,y数组中，那些元素是属于归并后的数组的前半部份的（假设这里归并了两个数组，前半部份数组也就是以middle为划分，索引小于middle的数组， 这里我们把这个数组成为有效数组）。
+问题就是如何找到这个有效数组，可以先分别找到两个集合的中位数middle1，middle2并结合middle去调整middle1和middle2。直到middle1_idx + middle2_idx == middle。此时我们就找到了有效数组的所有元素。比如下面的例子。
+#+begin_src 
+  1 3 5 6 7
+  1 2 7 8 10
+
+  第一次
+  1 3 5 6 7
+      ^
+  1 2 7 8 10
+      ^
+  此时发现 middle1_idx + middle2_idx > middle 我们调整middle2_idx 因为他比较大，不可能出现在有效数组里面。
+  1 3 5 6 7
+      ^
+  1 2 7 8 10
+    ^
+  这个时候发现，middle1_idx + middle2_idx == middle 有效数组的所有元素已经找齐了
+#+end_src
+
+下面要做的就是根据有效数组，找到正确的中位数
+通过比较x[middle1_idx] y[middle2_idx] 来确定谁是有效数组的最后一个元素，这个时候，其实中位数已经差不多找到了。如果两数组之和为奇数，那它就是中位数。为偶数，就取比较x[middle1_idx+1] y[middle2_idx+1] 以及最后一个元素，取比最后一个元素大，且离他最近的元素取求偶数情况下的中位数
+用上面的例子
+#+begin_src sh
+5 6 6 三者进行比较 (5+6)/2,就是中位数
+#+end_src
+
+** implementation
+#+begin_src cpp :tangle "./codeMedian_of_Two_Sorted_Arrays.cpp"
+  #include <cmath>
+  #include <iostream>
+  #include <vector>
+
+  class Solution {
+  public:
+    double findMedianSortedArrays(vector<int> &nums1, vector<int> &nums2) {
+        int total_length = nums1.size() + nums2.size();
+        int idx1 = nums1.size() / 2;
+        int idx2 = nums2.size() / 2;
+        int mid = total_length / 2;
+
+        while (idx1 + idx2 != mid) {
+            if (idx1 + idx2 < mid) {
+                if(idx1 < idx2){
+                  
+                }else{
+
+                }
+            }
+            else if(idx1 + idx2 > mid) {
+                if(idx1 < idx2){
+
+                }else{
+
+                }
+            }
+        }
+    };
+
+      int main(int argc, char *argv[]) { return 0; }
+#+end_src
+** summery

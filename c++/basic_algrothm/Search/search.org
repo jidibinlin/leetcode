@@ -49,8 +49,7 @@ keys must be Comparable object. So, in such implementations, we can keep the key
 + Minimum and maximum :: return the minimum key or the maximum key
 + Floor :: find the lagest key that is less then or equal to the given key
 + ceiling :: find the smallest key that is greater than or equal to the given key
-+ Rank :: find the number of keys less than a given key
-+ select :: find the key with a given rank(i == rank(select(i)))
++ Rank :: find the number of keys less than a given key + select :: find the key with a given rank(i == rank(select(i)))
 + Range queries :: How many keys fall within a given range(between two given key)
 + Exception cases :: when a methods is to return a key and there is no key fitting a description in the table,out convention is to throw an exception (an alternate approach,which is also reasonable,would be to return null in such caces). For example,min(),max(),deleteMin(),deleteMax(),floor(),and ceiling() all throw exceptions if the table is empty,as does select(k) if k is less than 0 or not less than size()
 + Shorthand methods :: As we have already seen with isEmpty() and contains() in out basic API,we keep some redundant methods in the API for clarity in client code.We assume that the following default implementations are included in any implementation of the ordered symbol-table API unless otherwise specified;
@@ -70,7 +69,49 @@ Use linked list to implement the underlying data structure of a symbol table.We 
 [[file:Search_algrothm/2021-10-28_16-48-59_screenshot.png]]
 
 *** implement
-#+begin_src c++ :file "none.cpp"
 
+Just give the core code,key.equals() need to be implement before put into ths SequentialSearchST.
+#+begin_src c++ :tangle "Sequential-search.cpp"
+  using namespace std;
+  
+  template <typename Key, typename Value>
+  class SequentialSearchST {
+  private:
+      class Node {
+      public:
+          Key key;
+          Value value;
+          Node *next;
+          Node(Key key, Value value, Node *next) {
+              this->key = key;
+              this->value = value;
+              this->next = next;
+          }
+      };
+
+      Node *first;
+  public:
+
+      Value get(Key key){
+          for(Node x = first; x!=NULL;x=x->next){
+              if(key->equals(x->key)){
+                  return x->val;
+              }
+              return NULL;
+          }
+      }
+
+      void put(Key key, Value val){
+          for (Node *x = first; x != NULL; x=x->next) {
+              if(key->equals(x->key)){
+                  x->val = val;
+                  return;
+              }
+          }
+          first = new Node(key,val,first);
+      }
+  };
 #+end_src
+Inserting or Search N distinct keys into an initially empty linked-list symbol table uses~$$N^{2}/2$$ compares
+A linked-list implementation with sequential search is too slow for it to be used to solve huge problems.
 

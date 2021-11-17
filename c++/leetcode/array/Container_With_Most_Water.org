@@ -1,5 +1,4 @@
 * Container_With_Most_Water
-* Container_With_Most_Water
 ** TODO Description
 
 ** analyze problem
