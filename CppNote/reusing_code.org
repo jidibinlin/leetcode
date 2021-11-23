@@ -13,3 +13,4 @@ Using class here doesn`t mean that type must be a class; it just means that Type
 
 #+end_src
 Newer c++ implementations allow you to use the less confusing keyword typename instead of class in this context;
+

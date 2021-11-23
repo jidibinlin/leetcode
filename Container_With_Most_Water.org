@@ -29,4 +29,3 @@ min(x,y)*t = x*t
 我们任意向左移动右指针，指向的数为$y_{1}$，两个指针之间的距离为$t_{1}$，$t_{1} \textless  t$，并且 $min(x,y_{1}) \le min(x,y)$
 - 如果$y_{1} \le y$, then $min(x,y_{1}) \le min(x,y)$;
 - 如果$y_{1} \ge y$, then $min(x,y_{1}) =x= min(x,y)$;
-** 
