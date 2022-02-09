@@ -1,6 +1,9 @@
-* Container_With_Most_Water
+#+STARTUP: latexpreview
 * Container_With_Most_Water
 ** TODO Description
+https://leetcode-cn.com/problems/container-with-most-water/
+#+DOWNLOADED: screenshot @ 2022-02-09 17:16:12
+[[file:Container_With_Most_Water/2022-02-09_17-16-12_screenshot.png]]
 
 ** analyze problem
 CLOSED: [2021-11-01 Mon 15:26]
@@ -72,6 +75,29 @@ min(x,y_{t})*t_{1} \textless min(x,y)*t
   };
 
   int main(int argc, char *argv[]) { return 0; }
+#+end_src
+
+#+begin_src go :tangle "./code/Container_With_Most_Water.go"
+    import "math"
+    func maxArea(height []int) int {
+        front := 0
+        end := len(height)-1
+
+        var maxCompacity float64 = 0
+
+        for front < end {
+            longSide := math.Min(float64(height[front]),float64(height[end]))
+            shotSide := float64(end-front)
+            tmpCompacity := longSide*shotSide
+            maxCompacity = math.Max(tmpCompacity,maxCompacity)
+            if height[front] >= height[end] {
+                end--
+            }else{
+                front++
+            }
+        }
+        return int(maxCompacity)
+    }
 #+end_src
 ** summery
 这道题用到了双指针+贪心算法。以后都可以用双指针对撞的思想去求解这类问题，重点在于如何找到应该移动的指针。当因子分布再数组的两边的时候，可以考虑使用双指针的方法求解。这题的贪心并不明显，只在更新最大的容量的时候进行了贪心。贪心的思想是每一步只选择当前认为的最优解。

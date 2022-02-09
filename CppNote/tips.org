@@ -1,0 +1,128 @@
+* 单例的写法
+单例是最常用的简单的一种设计模式，实现方法多样，根据不同的需求有不同的写法。这里只介绍几种比较好的写法。
+** 有缺陷的懒汉式
+#+begin_src cpp
+  #include <iostream>
+
+  using namespace std;
+
+  class Singleton{
+  private:
+      Singleton(){
+          cout<<"constructor called!"<<std::endl;
+      }
+
+      Singleton(Singleton&)=delete;// 此处使用delete可以禁用拷贝构造
+      Singleton& operator = (const Singleton&)=delete;
+      static Singleton * instance_ptr;
+  public:
+      ~Singleton(){
+          cout<<"destructor called!"<<endl;
+      }
+
+      static Singleton* get_instance(){
+          if(instance_ptr==nullptr){
+              instance_ptr = new Singleton;
+          }
+          return instance_ptr;
+      }
+  };
+
+  Singleton* Singleton::instance_ptr = nullptr;//所有静态成员必须在类外开辟空间
+
+  int main(int argc, char *argv[])
+  {
+      Singleton* instance = Singleton::get_instance();
+      Singleton* instance2 = Singleton::get_instance();
+      return 0;
+  }
+#+end_src
+
+这种实现方式有两个问题
++ 线程安全问题 :: 当多线程访问的时候,可能引发竞态条件. 当第一个线程在if中判断instance_ptr是空的,
+  于是开始实例化单例,同时第二个线程也尝试获取单例,这个时候由于第一个线程还没实例化完成于是也开始实例化
+  单例;这样就会导致实例化两个对象
++ 内存泄漏 :: 这个类只负责new对象,却没有负责delete对象. 可以使用 *共享指针* 解决这个问题;
+** 最推荐的懒汉式单例(magic static)--局部静态变量  
+#+begin_src cpp
+  #include <iostream>
+
+  using namespace std;
+
+  class Singleton{
+  public:
+      ~Singleton(){
+          cout<<"destructor called"<<endl;
+      }
+      Singleton(const Singleton&)=delete;
+      Singleton& operator=(const Singleton&) = delete;
+      static Singleton& get_instance(){
+          static Singleton instance;
+          return instance;
+      }
+  private:
+      Singleton(){
+          cout<<"constructor called"<<endl;
+      }
+  };
+
+  int main(int argc, char *argv[])
+  {
+      Singleton& instance = Singleton::get_instance();
+      Singleton& instance2 = Singleton::get_instance();
+      return 0;
+  }
+#+end_src
+这种方式利用了Magic Static 的特性.如果变量初始化时,并发同时进入声明语句,并发线程将会阻塞等待初始化结束.c++静态变量生命周期从声明到程序结束,也是一种懒汉式.
+
+** 单例模板
+*** CRTP奇异 递归模板模式实现
+#+begin_src cpp :tangle CRTP_singleton.cpp
+  #include <iostream>
+  using namespace std;
+
+
+  template <typename T>
+  class Singleton{
+  public:
+      static T& get_instance(){
+          static T instacne;
+          return instacne;
+      }
+      virtual ~Singleton(){
+          cout<<"destrector called"<<endl;
+      }
+      Singleton(const Singleton&) = delete;
+      Singleton& operator = (const Singleton&)=delete;
+  protected:
+      Singleton(){
+          cout<<"constrector called"<<endl;
+      }
+  };
+
+  //Example:
+  //1. friend calss declaration is required!
+  //2. constructor should be private
+
+  class DerivedSingle:public Singleton<DerivedSingle>{
+      //!!! attention!!!
+      //needs to be friend in order to
+      //access the private constructor/destructor
+      friend class Singleton<DerivedSingle>;
+  public:
+      DerivedSingle(const DerivedSingle&) = delete;
+      DerivedSingle& operator = (const DerivedSingle&) = delete;
+  private:
+      DerivedSingle() = default;
+  };
+
+  int main(int argc, char *argv[])
+  {
+      DerivedSingle& instance = DerivedSingle::get_instance();
+      DerivedSingle& instance2 = DerivedSingle::get_instance();
+      return 0;
+  }
+#+end_src
+1. 构造函数需要是protected,这样子类才能继承;
+2. 使用了奇异递归模板模式
+3. 这里的基类析构函数可以不需要virtual,因为子类在应用种只会用Derived类型,保证了析构时和构造时的类型一致
