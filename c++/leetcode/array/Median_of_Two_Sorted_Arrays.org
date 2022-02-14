@@ -47,7 +47,7 @@ The overall run time complexity should be O(log (m+n)).
     1 <= m + n <= 2000
     -106 <= nums1[i], nums2[i] <= 106
   #+end_src
-* analyse
+* Analyse
 这道题最简单的想法就是先归并到一个数组，然后再把中位数找到，但是此时的时间复杂度为$o(m+n)$ 不符合题意。题目要求的是 $o(\log(m+n))$ 。
 此时我们能想到的应该就只有二分法了，对于有序数组，二分法总能非常有效的降低算法的复杂度。但是如何二分成为一个问题。
 中位数指的是一个数列中间的数。设 len = len(array) 这里的/为整除
@@ -73,7 +73,7 @@ $\frac{k}{2}$ 个数进行比较，然后排除较小的以及它所在数组中
 2. k=1 直接返回较小的元素
 3. 数组为空，直接去非空数组中寻找即可
 
-* Solution
+* Implement
 #+begin_src cpp :tangle Median_of_Two_Sorted_Arrays.cpp
   #include <iostream>
   #include <vector>
@@ -138,4 +138,64 @@ $\frac{k}{2}$ 个数进行比较，然后排除较小的以及它所在数组中
           }
       }
   };
+#+end_src
+
+#+begin_src go :tangle Median_of_Two_Sorted_Arrays.go
+  package main
+
+  import (
+      "fmt"
+      "math"
+  )
+
+  func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+      k := int(math.Ceil((float64(len(nums1)) + float64(len(nums2))) / 2))
+
+      if (len(nums1)+len(nums2))%2 == 0 {
+          foo1 := getKthElement(nums1, nums2, k)
+          foo2 := getKthElement(nums1, nums2, k+1)
+          return float64(foo1+foo2) / 2
+      } else {
+          return float64(getKthElement(nums1, nums2, k))
+      }
+
+  }
+
+  func getKthElement(nums1 []int, nums2 []int, k int) int {
+      if len(nums1) == 0 {
+          return nums2[k-1]
+      }
+
+      if len(nums2) == 0 {
+          return nums1[k-1]
+      }
+
+      compareIdx := k / 2
+
+      if compareIdx == 0 {
+          return min(nums1[0], nums2[0])
+      }
+
+      nums1Idx := min(len(nums1)-1, compareIdx-1)
+      nums2Idx := min(len(nums2)-1, compareIdx-1)
+
+      if nums1[nums1Idx] >= nums2[nums2Idx] {
+          if len(nums2) <= compareIdx {
+              return getKthElement(nums1, []int{}, k-(nums2Idx+1))
+          }
+          return getKthElement(nums1, nums2[compareIdx:], k-(nums2Idx+1))
+      } else {
+          if len(nums1) <= compareIdx {
+              return getKthElement([]int{}, nums2, k-(nums1Idx+1))
+          }
+          return getKthElement(nums1[compareIdx:], nums2, k-(nums1Idx+1))
+      }
+  }
+
+  func min(x, y int) int {
+      if x < y {
+          return x
+      }
+      return y
+  }
 #+end_src

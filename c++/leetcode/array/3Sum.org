@@ -1,0 +1,66 @@
+#+STARTUP: latexpreview
+* Problems description
+#+DOWNLOADED: screenshot @ 2022-02-12 15:24:53
+[[file:Problems_description/2022-02-12_15-24-53_screenshot.png]]
+
+* Analyse
+这道题难点在于不重复的三元组，但是三重枚举后不断通过哈希去去重的消耗太高不合适。解决这个难点的可以先将数组进行排序，然后按照顺序去枚举当遇到相同的元素时，直接跳过，这样就避免了之后需要哈希去重的麻烦事。
+这道题的三重枚举可以优化成两重。当 a+b+c = 0(a<=b<=c)，在进行下一次二重枚举的时候有 a+b`+c`=0(b`>b && c`<c) 这意味着，我们不必在第三重枚举时枚举所有剩下的元素，只需要枚举比上一次满足要求组合中比c小的元素即可。
+* Implement
+#+begin_src go :tangle 3Sum.go
+  package main
+
+  import (
+      "fmt"
+      "sort"
+  )
+
+  func threeSum(nums []int) [][]int {
+
+      if len(nums) < 3 {
+          return [][]int{}
+      }
+
+      result := [][]int{}
+      sort.Ints(nums)
+
+      for i := 0; i <= len(nums)-3; i++ {
+          if i > 0 && nums[i] == nums[i-1] {
+              continue
+          }
+
+          k := len(nums) - 1
+          target := -1 * nums[i]
+
+          for j := i + 1; j <= len(nums)-2; j++ {
+              if j > i+1 && nums[j] == nums[j-1] {
+                  continue
+              }
+
+              for j < k && nums[j]+nums[k] > target {
+                  k--
+              }
+
+              if j == k {
+                  break
+              }
+
+              if nums[j]+nums[k] == target {
+                  result = append(result, []int{nums[i], nums[j], nums[k]})
+              }
+
+          }
+      }
+      return result
+  }
+#+end_src
+
+#+begin_src c++ :tangle 3Sum.cpp
+  #include <algorigthm>
+  #include <vector>
+  class Solution {
+  public:
+      vector<vector<int>> threeSum(vector<int>& nums) {
+      }
+  };
+#+end_src
