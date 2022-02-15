@@ -6,7 +6,13 @@ class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
 
-        vector<vector<int>> = vector<vector<int>>()
+        vector<vector<int>> result;
+
+        if (nums.size() < 3) {
+            return result;
+        }
+
+        sort(nums.begin(),nums.end());
 
         for (int i=0; i<nums.size(); ++i) {
             if (i>0 && nums[i]==nums[i-1]) {
@@ -21,23 +27,19 @@ public:
                     continue;
                 }
 
-                while(third> j && nums[j]+nums[third] > target){
+                while(j<third && nums[j]+nums[third] > target){
                     third--;
                 }
 
                 if (third == j) {
-                    continue;
+                    break;
                 }
 
                 if(nums[j]+nums[third] == target){
-                    vector<int> tmp = vector<int>(3);
-                    tmp.push_back(nums[i]);
-                    tmp.push_back(nums[j]);
-                    tmp.push_back(nums[third]);
-                    nums.push_back(tmp);
+                    result.push_back({nums[i],nums[j],nums[third]});
                 }
-
             }
         }
+        return result;
     }
 };
