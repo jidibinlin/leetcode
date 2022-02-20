@@ -1,5 +1,5 @@
 #+STARTUP: latexpreview
-* Problems description
+* Problem description
 #+DOWNLOADED: screenshot @ 2022-02-12 15:24:53
 [[file:Problems_description/2022-02-12_15-24-53_screenshot.png]]
 
