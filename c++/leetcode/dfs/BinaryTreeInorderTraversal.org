@@ -4,4 +4,35 @@
 
 * Analyse
 * Implement
+#+begin_src go
+  package main
+  /**
+   ,* Definition for a binary tree node.
+   ,* type TreeNode struct {
+   ,*     Val int
+   ,*     Left *TreeNode
+   ,*     Right *TreeNode
+   ,* }
+   ,*/
+  func inorderTraversal(root *TreeNode) []int {
+      result := make([]int)
+
+      if root == nil {
+          return result
+      }
+
+      if root.Left != nil {
+          foo := inorderTraversal(root.Left)
+          append(result, foo...)
+      }
+
+      append(result, root)
+
+      if root.Right != nil {
+          foo := inorderTraversal(root.Right)
+          append(result, foo...)
+      }
+      return result
+  }
+#+end_src
 * Summery
