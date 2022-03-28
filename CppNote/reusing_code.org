@@ -1,6 +1,18 @@
-** Class Templates
+#+OPTIONS: author:nil ^:{}
+#+HUGO_BASE_DIR: ~/Documents/myblog
+#+HUGO_SECTION: posts/2022/03
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_DRAFT: false
+#+DATE: [2022-03-28 Mon 16:19]
+#+TITLE: C++ Template - Class Template
+#+HUGO_TAGS: cpp
+#+HUGO_CATEGORIES: cpp
+
+
+* Class Templates
 *Class Templates* provide a way to generate generic class declarations.Templates provide /parameterized/ types--that is, they are capable of passing a type name as an argument to a recipe for building a class or a function.
-*** Define a Class Template
+** Define a Class Template
 The keyword *template* informs the compiler that you`re about to define a template. The part in angle brackets is analogous to an argument list to a function. You can think of the keyword *class* as serving as a type name for a variable that accept a type as value,and of *Type* is representing a name for this variable.
 
 Using class here doesn`t mean that type must be a class; it just means that Type serves as a generic type specifier for which a real type will be substituted when the template is used.
@@ -40,7 +52,7 @@ You can replace the class methods of the original class with template member fun
 #+begin_src c++
   templace <typename Type>
   bool Stack<Type>::push(const Type & item){
-  
+
   }
 #+end_src
 if you define a method within the class declarations(an inline definition),you can omit the templace preface and the class qualifier.For some reason you should place all the templace in a header file and to include the header file in the file that will use the templaces;
@@ -94,12 +106,12 @@ if you define a method within the class declarations(an inline definition),you c
           return true;
       }else{
           return false
-      }
+              }
   }
 
   #endif
 #+end_src
-*** Using a Template Class
+** Using a Template Class
 To declare an object of the template class type,replacing the generic type name with the particular type you want.For example,here`s how you would create two stacks, one for stacking ints and one for stacking string objects;
 #+begin_src c++
   Stack<int> kernels;
