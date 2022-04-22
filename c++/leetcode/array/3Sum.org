@@ -1,4 +1,15 @@
 #+STARTUP: latexpreview
+#+OPTIONS: author:nil ^:{}
+#+HUGO_BASE_DIR: ~/Documents/myblog
+#+HUGO_SECTION: posts/2022/04
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true :math true
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_DRAFT: false
+#+DATE: [2022-04-05 Tue 05:24]
+#+TITLE: leetcode-三数之和
+#+HUGO_TAGS: leetcode 双指针
+#+HUGO_CATEGORIES: leetcode
+
 * Problem description
 #+DOWNLOADED: screenshot @ 2022-02-12 15:24:53
 [[file:Problems_description/2022-02-12_15-24-53_screenshot.png]]

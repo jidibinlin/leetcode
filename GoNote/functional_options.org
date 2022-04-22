@@ -1,3 +1,14 @@
+#+OPTIONS: author:nil ^:{}
+#+HUGO_BASE_DIR: ~/Documents/myblog
+#+HUGO_SECTION: post/2022/03
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true :mathjax true :author jidibinlin
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_DRAFT: false
+#+DATE: [2022-03-30 Wed 22:59]
+#+TITLE: go函数选项解决go没用冲在及默认参数的问题
+#+HUGO_TAGS: go functionalOptions
+#+HUGO_CATEGORIES: go
+
 * Functional Options
 + go语言的函数没有重载以及默认参数的功能，这个时候生成一个i对象会变得极其麻烦
   #+begin_src go
@@ -77,7 +88,7 @@
     }
   #+end_src
 
- + 用法：
++ 用法：
    #+begin_src go
      package main
 

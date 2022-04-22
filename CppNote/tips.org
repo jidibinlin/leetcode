@@ -1,3 +1,14 @@
+#+OPTIONS: author:nil ^:{}
+#+HUGO_BASE_DIR: ~/Documents/myblog
+#+HUGO_SECTION: /post/2022/04
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true :math true :author jidibinlin
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_DRAFT: false
+#+DATE: [2022-04-02 Sat 21:14]
+#+TITLE: c++单例的几种写法
+#+HUGO_TAGS: cpp singleton
+#+HUGO_CATEGORIES: c++
+
 * 单例的写法
 单例是最常用的简单的一种设计模式，实现方法多样，根据不同的需求有不同的写法。这里只介绍几种比较好的写法。
 ** 有缺陷的懒汉式

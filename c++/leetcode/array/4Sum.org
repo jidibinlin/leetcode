@@ -1,3 +1,14 @@
+#+OPTIONS: author:nil ^:{}
+#+HUGO_BASE_DIR: ~/Documents/myblog
+#+HUGO_SECTION: zh-CN/post/2022/03
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true :math true :author jidibinlin
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_DRAFT: false
+#+DATE: [2022-03-30 Wed 23:34]
+#+TITLE: leetcode-四数之和
+#+HUGO_TAGS: leetcode double-point
+#+HUGO_CATEGORIES: leetcode
+
 * Problem Description
 #+DOWNLOADED: screenshot @ 2022-02-16 14:14:26
 [[file:Problem_Description/2022-02-16_14-14-26_screenshot.png]]

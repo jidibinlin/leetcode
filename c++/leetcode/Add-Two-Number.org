@@ -1,3 +1,16 @@
+#+OPTIONS: author:nil ^:{}
+#+HUGO_BASE_DIR: ~/Documents/myblog
+#+HUGO_SECTION: post/2022/03
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true :mathjax true :author jidibinlin
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_DRAFT: false
+#+DATE: [2022-03-30 Wed 23:03]
+#+TITLE: 两数之和
+#+HUGO_TAGS: leetcode linked-list
+#+HUGO_CATEGORIES: leetcode
+
+
+
 * Add-Two-Number
 给你两个非空 的链表，表示两个非负的整数。它们每位数字都是按照?逆序?的方式存储的，并且每个节点只能存储一位数字。
 请你将两个数相加，并以相同形式返回一个表示和的链表。
@@ -15,7 +28,7 @@
 2. 设置一个用来存储进位信息的变量carry，如果有进位，就将他存入carry当中
 3. 每次相加还需要带上carry
 4. 最后，要是carry不为零，还要为链表申请一个节点用来存储最高位
-*** c++ 代码实现
+** c++ 代码实现
 
 #+begin_src cpp
   /**
@@ -68,17 +81,17 @@
 
 #+end_src
 
-*** lua 代码实现
+** lua 代码实现
+
 这里介绍下怎么用lua代码实现本题。要想用lua实现这一题有个问题要解决。
-- lua中没有链表,怎么用lua去实现一个链表 :: 解决办法就是用lua中的table去实现一个链表 
-  lua的table本身就是一个引用类型，所以是很好去构造一个链表的数据结构的
++ lua中没有链表,怎么用lua去实现一个链表 :: 解决办法就是用lua中的table去实现一个链表 lua的table本身就是一个引用类型，所以是很好去构造一个链表的数据结构的
   #+begin_src lua
     ListNode = {
        value=nil;
        next=nil
     }
   #+end_src
-+ 具体代码实现
+
   #+begin_src lua
     --[[
     ListNode={

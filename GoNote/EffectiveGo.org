@@ -1,3 +1,16 @@
+#+OPTIONS: author:nil ^:{}
+#+HUGO_BASE_DIR: ~/Documents/myblog
+#+HUGO_SECTION: post/2022/03
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true :mathjax true :author golang_official
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_DRAFT: false
+#+DATE: [2022-03-30 Wed 23:01]
+#+TITLE: effective_go
+#+HUGO_TAGS: go
+#+HUGO_CATEGORIES: golang
+
+this artical is copied from golang official
+
 * Formatting
 Go let the machine take care of most formatting issues. The gofmt program(also available as go fmt,which operates at the package level rather than source file level) emits the source in a standard style of indentation and vertical alignment,retaining and if necessary reformatting comments.
 + before formatted

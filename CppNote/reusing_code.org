@@ -1,13 +1,14 @@
 #+OPTIONS: author:nil ^:{}
 #+HUGO_BASE_DIR: ~/Documents/myblog
-#+HUGO_SECTION: posts/2022/03
-#+HUGO_CUSTOM_FRONT_MATTER: :toc true
+#+HUGO_SECTION: /post/2022/04
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true :math true
 #+HUGO_AUTO_SET_LASTMOD: t
 #+HUGO_DRAFT: false
-#+DATE: [2022-03-28 Mon 16:19]
-#+TITLE: C++ Template - Class Template
-#+HUGO_TAGS: cpp
+#+DATE: [2022-04-02 Sat 21:17]
+#+TITLE: C++ Template -- Class Template
+#+HUGO_TAGS: cpp-template
 #+HUGO_CATEGORIES: cpp
+
 
 
 * Class Templates
