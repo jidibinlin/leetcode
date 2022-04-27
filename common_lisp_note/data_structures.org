@@ -8,7 +8,7 @@
 #+HUGO_DRAFT: false
 #+DATE: [2022-04-19 Tue 11:13]
 #+TITLE: common lisp 数据结构
-#+HUGO_TAGS: data-structure
+#+HUGO_TAGS: common-lisp
 #+HUGO_CATEGORIES: lisp
 #+DESCRIPTION: 关于common lisp的一些常用数据结构 list sequences hash-table Alist structures Tree Set 介绍及其基本操作
 #+begin_export html

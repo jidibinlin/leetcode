@@ -8,7 +8,7 @@
 #+HUGO_DRAFT: false
 #+DATE: [2022-04-17 Sun 14:07]
 #+TITLE: common lisp 函数
-#+HUGO_TAGS: common_lisp
+#+HUGO_TAGS: common-lisp
 #+HUGO_CATEGORIES: lisp
 #+DESCRIPTION: 
 #+begin_export html
