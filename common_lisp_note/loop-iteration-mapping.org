@@ -585,5 +585,66 @@ loop named foo 语法允许你创建一个能够提前退出的循环。使用re
 #+end_src
 + never
   #+begin_src lisp
-
+    (loop for x in '(foo 2)
+          never (numberp x))
+    NIL
   #+end_src
++ always
+  #+begin_src lisp
+    (loop for x in '(foo 2)
+          always (numberp x))
+    NIL
+  #+end_src
+他们和some,notany,every对应：
+#+begin_src lisp
+  (some #'numberp '(foo 2))
+  (notany #'numberp '(foo 2))
+  (every #'numberp '(foo 2))
+#+end_src
+** Count
+#+begin_src lisp
+  (loop for i from 1 to 3 count (oddp i))
+  ;; 2
+#+end_src
+** Summation
+#+begin_src lisp
+  (loop for i from 1 to 3 sum (* i i ))
+  ;; 14
+#+end_src
+*** 将求和的结果放入变量中
+#+begin_src lisp
+  (loop for i from 1 to 3
+        sum (* i i) into total
+        do (print i)
+        finally (print total))
+  1
+  2
+  3
+  14
+#+end_src
+** Max and Min
+#+begin_src lisp
+  (loop for i from 1 to 3 maximize (mod i 3))
+  ;; 2
+#+end_src
+** 解构, 对 list 进行dotted pairs aka 模式匹配
+#+begin_src lisp
+  (loop for (a b) in '((x 1) (y 2) (z 3))
+        collect (list b a))
+  ;; ((1 X) (2 Y) (3 Z))
+
+  (loop for (x . y) in '((1 . a) (2 . b) (3 . c)) collect y)
+  ;; (A B C)
+#+end_src
+使用nil忽略
+#+begin_src lisp
+  (loop for (a nil) in '((x 1) (y 2) (z 3))
+        collect a)
+  ;; (X Y Z)
+#+end_src
+两个两个的遍历
+#+begin_src lisp
+  (loop for (key value) on '(a 2 b 2 c 3) by #'cddr
+        collect (list key (* 2 value)))
+  ;;((A 2) (B 4) (C 6))
+#+end_src
