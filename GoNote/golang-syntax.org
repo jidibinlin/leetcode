@@ -1,0 +1,290 @@
+#+startup: latexpreview
+#+OPTIONS: author:nil ^:{}
+#+HUGO_BASE_DIR: ~/Documents/myblog
+#+HUGO_SECTION: /posts/2022/06
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true :math true
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_PAIRED_SHORTCODES: admonition
+#+HUGO_DRAFT: false
+#+DATE: [2022-06-12 Sun 17:24]
+#+TITLE: golang语法基础
+#+HUGO_TAGS: golang
+#+HUGO_CATEGORIES: golang
+#+DESCRIPTION: golang的语法基础: 编程语言的语法总是离不开三件套，变量，函数，控制结构. 这里着重介绍golang这三部分的基础知识.
+#+begin_export html
+<!--more-->
+#+end_export
+
+* 定义(Declarations)
+定义用来描述一个编程元素的基本属性，比较难理解。通俗来说，就是指定这个元素是干什么的。元素被定义的那一刻就被赋予了职能。比如总统有总统该干的事，猫天生就会抓老鼠，水可以呈现液态，固态，气态三种形式。
+golang有三种形式的定义
++ var 用来定义变量
++ const 用来定义常量
++ type 用来定义类型
++ func 用来定义函数
+** 定义的作用域
+定义是分作用范围的，golang的作用范围分为
++ package-level 包级别: 在包中都能被访问到
++ func-level 函数级别: 只能在函数中被访问到
++ block-level 块级别: 只能在代码块中被访问到
+三个作用域级别由大到小，block-level最小.
+*** package-level
+#+begin_src go
+  package main //申明所在的包
+
+  import "fmt"
+
+  const boilingF = 212.0
+  func main() {
+  }
+#+end_src
+在这段代码中 boilingF 就是包级别的常量. 只要项目文件的开头申明了 *package main* 那么boilingF就可以在这个文件中被访问到
+*** func-level
+#+begin_src go
+  package main
+
+  import "fmt"
+
+  func main() {
+      const  boilingF = 212.0
+  }
+#+end_src
+这段代码的boilingF就只能在main函数中被访问到
+*** block-level
+#+begin_src go
+  package main
+
+  import "fmt"
+
+  func main() {
+      if true {
+          const boilingF = 212.0
+      }
+  }
+#+end_src
+这里的boilingF就只能在if代码块中被访问
+*** 同名定义的访问顺序自底向上
+试想一种场景，若在三个作用域级别中，我们分别都定义了 *boilingF* 那我们将访问到哪一个 *boilingF*
+#+begin_src go
+  package main
+
+  import "fmt"
+  const boilingF = 212.0
+  func main() {
+      const boilingF = 213.0
+      fmt.Printf("boilingF %d\n",boilingF)
+      if true {
+          const boilingF = 214.0
+          fmt.Printf("boilingF %d\n",boilingF)
+      }
+  }
+#+end_src
+执行结果
+#+begin_src 
+  boilingF = 213.000000
+  boilingF = 214.000000
+#+end_src
+可以看到第一个打印打印的是213而不是212.0 说明212被213隐藏了. 而在if代码块中 打印的是214而不是213说明213被隐藏了。
+这说明若有同名变量，那么低作用域的定义将会覆盖高作用域的定义
+*** 同作用域内，不可重定义同名变量
+#+begin_src go
+  package main
+
+  import "fmt"
+
+  const boilingF = 212.0
+  const boilingF = 212.0
+
+  func main() {
+	
+  }
+#+end_src
+这段代码编译是不会通过的，因为定义了两次boilingF属于重定义错误
+
+#+attr_shortcode: :type note :title note :open true
+#+begin_admonition
+这些只是一些基本的知识，更多的有关定义的坑将会在下面的变量中介绍
+#+end_admonition
+* 变量(variable)
+变量有两种定义方式
++ *var*
+#+begin_src go
+  var name type = expression
+#+end_src
++ 语法糖 *:=*
+#+begin_src go
+  name := expression
+#+end_src
+** 使用var来定义
+在使用var 来定义变量时 type 和 expression可以省略其中一个 但是不可以同时省略（同时省略的话，go将不清楚我们具体要定义什么）
+*** 省略type(自动推倒类型)
+省略type 的时候 golang将会根据expression自动推倒类型， 后面将会介绍的 := 就是这种写法的语法糖
+比如
+#+begin_src go
+  var name = "jidibinlin" // name 的类型是string
+  var age = 12 // age 的类型是age
+#+end_src
+*** 省略expression
+若省略expression 变量将被默认值（0值)取代。
++ 对于数值类型，默认值将是0, 对于字符串将会是""
++ 对于bool型将会是false,对于引用类型(slice,pointer,map,channel,function) 将会是nil
++ 对于array和struct来说，他们的元素将会是0值
+#+begin_src go
+  var s string // s = ""
+  var i int // i = 0
+  var b bool // b = false
+  var slc []int // slic = nil
+
+  var arr [3]int // arr[0]=0 arr[1]=0 arr[2]=0
+
+  type astruct struct {
+      s string
+      i int
+      b bool
+      slc []int
+  }
+
+  var stru astruct // stru.s = "" stru.i = 0 stru.b = false stru.slc = nil
+#+end_src
+*** 一次定义多个变量
+#+begin_src go
+  var i, j, k int //int, int, int
+  var b, f, s = true, 2.3, "fout" //bool,float64,string
+#+end_src
+*** 接受多返回值函数的返回值
+go可以定义多返回值的函数。 使用var 就可以很便捷的申明多个变量用来接受函数的返回值.
+#+begin_src go
+  var f,err = os.Open(name) //os.Open 会返回一个file 和 一个error
+#+end_src
+#+attr_shortcode: :type note :title note :open true
+#+begin_admonition
+注意，由于函数的返回值类型是不确定的。 而var 在定义多变量的时候只能是同一类型的
+#+begin_src go
+var i, j ,k int
+#+end_src
+所以在接收多返回值函数的时候，建议使用自动类型推倒(强烈建议)
+#+end_admonition
+** := 语法糖
+*:=* 是用来定义和初始化变量的语法糖
+#+begin_src go
+  name := expression
+#+end_src
+乍一看似乎和自动推倒类型的var 形式很像，但是两者是有区别的. 两者都可以自动推倒变量的类型, 都可以同时申明多个variable
+#+begin_src go
+  var name = "" //name的类型为string
+  name1 := ""    // name的类型为string
+  name2, name3, name4 := "","",""
+#+end_src
+但是 *:=* 语法糖只能在函数的内部用来申明和初始化变量,而var 却可以用在函数外部
+#+begin_src go
+  package main
+
+  var i = 1 // right
+
+  j := 1 //wrong
+  func main() {
+      k := 2 //right
+      var g = 1 //right
+  }
+#+end_src
+*:=* 和 var 都会申明新的变量，但是:=却会考虑重用已有的变量
+#+begin_src go
+  var n1, n2 = "",""
+  var n2, n3 = "","" // wrong 这里会报n2重定义
+#+end_src
+#+begin_src go
+  name1,name2 := "",""
+  name2,name3 := "","" //right := 会重用name2 (如果有已经申明的变量的话 会重用)
+#+end_src
+
+#+attr_shortcode: :type warning :title warning :open true
+#+begin_admonition
+注意 *:=* 的左侧必须有未被申明的变量才能被执行
+#+begin_src go
+  name1,name2 :="",""
+  name1,name2 :="","" //wrong
+#+end_src
+#+end_admonition
+** Pointer指针
+如果对c系列的语言有了解的话，应该对指针是不陌生的. 在go 中指针的用法和c语言几乎相同 使用* 声明/解引用，使用&来取地址
+#+begin_src go
+  x := 1
+  p := &x //取地址 并声明一个p指针指向x
+  *p = 2 // 将2存进p指向的变量也就是x
+#+end_src
+有关go的指针不过多介绍
+** new函数
+new也可以用来创建指针,但是new创建的是指针类型,使用的时候直接在传入一个类型即可
+#+begin_src go
+  p := new(int) //p指向一块int型的内存空间
+  *p = 2 //给p指向的空间赋值
+#+end_src
+new 只是一种声明指针语法上的便捷写法
+
+** 变量的生命周期
+除了包级别的变量外(声明在函数外的变量), 其余变量的生命周期都是动态的。
+包级别的变量生命周期将会持续到整个程序被终止。
+动态生命周期指变量从变量被声明的那一刻起，一直到它无法被访问到为止。当变量无法被访问时他的内存可能会被回收。
+由于变量的生命周期是由其能否被访问到决定的，所以变量有可能会跳出循环或者函数继续存在。
+#+attr_shortcode: :type note :title note :open true
+#+begin_admonition
+  一般来说局部变量的可以跳出代码块而存在的话，我们就说这是一个逃逸变量。相对于非逃逸变量来说，逃逸变量的内存将会被分配在堆上，而非逃逸变量是分配在栈上的。
+  c++ 程序员需要关心变量是分配在栈上好，还是分配在堆上好。但是对于go来说，这些都是编译器自动完成的，程序员无需关心变量的内存是分配在栈上还是堆上。
+
+  栈是及时回收的数据结构，所有在栈上声明的变量在函数结束的那一刻都会被回收，所以如果变量在函数外还可以被使用，就应该分配在堆上。c++中堆是程序员自己释放的，而在go中，go有自己的回收方案。
+#+end_admonition
+
+#+begin_src go
+  var global *int
+
+  func f() {
+      var x int //x将被分配在堆上，因为global指向它，他逃逸出了f函数
+      x = 1
+      global = &x
+  }
+
+  func g() {
+      y := new(int) //y将被分配在栈上，因为他不是逃逸变量，出了g函数后，是没法被访问的
+      *y = 1
+  }
+#+end_src
+
+* 变量赋值
+赋值可以更新变量存储的value
+#+begin_src go
+  x = 1
+  *p = true
+  person.name = "bob"
+  count[x] = count[x]*scale
+#+end_src
+c语言支持的赋值操作go都支持包括++,--,+=,-=, 移位等等
+** 元组赋值(tuple assignment)
+元组赋值允许多个变量同时被赋值，所有右边的变量都会先被运算然后再赋值给左边。也就是说你可以这样交换两个变量的值
+#+begin_src go
+  x, y = y, x
+#+end_src
+前面有提到过，go的返回值可以有多个。go习惯用第二个返回值表示函数执行的状态，第二个返回值可以是error,或者一个bool值ok
+#+begin_src go
+  f, err = os.Open("foo.text") //如果err 不为nil的话表示打开文件失败
+#+end_src
+这一点在go中经常被用到
+#+begin_src go
+  v,ok = m[key] //从map中取值
+  v,ok = x.(T) //类型断言
+  v,ok = <-ch   //从channel中接受
+#+end_src
+如果你并不需要用到某些返回值，你可以用 "_" 占位来忽略它
+#+begin_src go
+  _, err = io.Copy(dst,src) //discard byte count
+  _, ok = x.(T)            //check type but discard result
+#+end_src
+
+但是捏，不要这样用
+#+begin_src go
+  v, _ = io.Copy(dst,src)
+#+end_src
+这样用和
+#+begin_src go
+  v = io.Copy(dst,src)
+#+end_src
+是没有区别的，但是上面的形式不推荐。因为元祖赋值是按顺序的，如果左边变量数量不足，那么右边的多余返回值会被自动忽略

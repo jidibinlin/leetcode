@@ -26,7 +26,7 @@ Go let the machine take care of most formatting issues. The gofmt program(also a
         name    string // name of the object
         value   int    // its value
     }
-  #+end_src
+#+end_src
 
 * Commentary
 Go Support C++ style comments. Line comments are norm;block comments appear mostly as package comments.
@@ -1757,4 +1757,3 @@ With error handling in place, the error method (because it's a method bound to a
 #+end_src
 
 By the way, this re-panic idiom changes the panic value if an actual error occurs. However, both the original and new failures will be presented in the crash report, so the root cause of the problem will still be visible. Thus this simple re-panic approach is usually sufficient—it's a crash after all—but if you want to display only the original value, you can write a little more code to filter unexpected problems and re-panic with the original error. That's left as an exercise for the reader.
-
