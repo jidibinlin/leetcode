@@ -219,8 +219,7 @@ new也可以用来创建指针,但是new创建的是指针类型,使用的时候
   p := new(int) //p指向一块int型的内存空间
   *p = 2 //给p指向的空间赋值
 #+end_src
-new 只是一种声明指针语法上的便捷写法
-
+new 和声明指针的区别在于，new会先分配内存空间再将这块空间的地址返回，而声明指针只是声明了一个指针，但是它并不指向任何地址。new 更像是先声明变量，再将变量的地址返回.
 ** 变量的生命周期
 除了包级别的变量外(声明在函数外的变量), 其余变量的生命周期都是动态的。
 包级别的变量生命周期将会持续到整个程序被终止。
@@ -250,7 +249,7 @@ new 只是一种声明指针语法上的便捷写法
 #+end_src
 
 * 变量赋值
-赋值可以更新变量存储的value
+赋值可以更新变量存储的value,但是左边和右边的类型必须是匹配的（比如左右都是同类型的,都实现了同一个接口）
 #+begin_src go
   x = 1
   *p = true
@@ -263,7 +262,7 @@ c语言支持的赋值操作go都支持包括++,--,+=,-=, 移位等等
 #+begin_src go
   x, y = y, x
 #+end_src
-前面有提到过，go的返回值可以有多个。go习惯用第二个返回值表示函数执行的状态，第二个返回值可以是error,或者一个bool值ok
+前面有提到过，go的返回值可以有多个。go习惯用第二个返回值表示函数执行的状态，第二个返回值可以是error,或者一个bool值ok,这样就可以知道在取出变量和调用函数的时候是否有错误和异常出现。
 #+begin_src go
   f, err = os.Open("foo.text") //如果err 不为nil的话表示打开文件失败
 #+end_src
@@ -288,3 +287,182 @@ c语言支持的赋值操作go都支持包括++,--,+=,-=, 移位等等
   v = io.Copy(dst,src)
 #+end_src
 是没有区别的，但是上面的形式不推荐。因为元祖赋值是按顺序的，如果左边变量数量不足，那么右边的多余返回值会被自动忽略
+#+attr_shortcode: :type note :title note :open true
+#+begin_admonition
+在go中函数经常以返回一个err或者bool 值的形式来告诉函数在调用的时候是否出现问题。这是go处理异常的方式。
+#+end_admonition
+
+* Type定义
+variable和expression的类型定义了这个variable的特征，例如这个值的大小，内部是如何表示的，可以对它做哪些操作，和它相关的函数有哪些。
+type 可以定义一个新的类型（基于已有类型，并且具有他的一切特性）
+#+begin_src go
+  type name underlying-type
+#+end_src
+type定义一般写在包级别的作用域中，这样对整个包中的代码都是可见的。如果这个类型被导出了，也可以在包外使用.
+我门先看一段简短的代码
+#+begin_src go
+  package tempconv
+
+  import "fmt"
+
+  type Celsius float64
+  type Fahrenheit float64
+
+  const (
+      AbsoluteZeroC Celsius = -273.15
+      FreezingC     Celsius = 0
+      BoilingC      Celsius = 100
+  )
+
+  func CToF (c Celsius) Fahrenheit {
+      return Fahrenheit(c*9/5 + 32)
+  }
+
+  func FToC (f Fahrenheit) Celsius {
+      return Celsius((f-32) * 5 /9)
+  }
+#+end_src
+
+这段代码定义了温度的两种表示方法Celsius(摄氏度)和Fahrenheit(华氏度),两者的基本类型都是Float64。Celsius和Fahrenheit是两种不同的类型，所以两者不能做数学运算和逻辑运算。这样做是为了防止因为表示温度的单位不同而导致错误。Celsius(t)和Fahrenheit(t)是转型器，并不是函数调用。type定义显示的改变了类型的意义。
+
+对于任意的类型T都有对应的转型操作T(x)用来将其他类型的值x转型成T类型的值. 当两种类型的基本类型是相同的时候，转型才被允许。如果是指针类型，被指向的值必须具有相同的基本类型才能够被转型。这些转型只会转换type但是值的表示是不会改变的。
+
+转型也能发生在数值类型，string,和一些slice类型之间，这些转型可能会改变值的表示，比如将float类型转型成integer类型会丢失小数点。将string类型转成[]byte slice.
+
+基本类型决定了 named type的结构和表示，以及所支持的操作，就像是基本类型被直接使用一样。不过，我们可以为named type 额外定义一些操作。
+#+begin_src go
+  func (c Celsius) string() string {
+      return fmt.Sprintf("%g*c"，c)
+  }
+#+end_src
+这段代码会返回Celsius的string类型并以*c结尾
+#+attr_shortcode: :type note :title note :open true
+#+begin_admonition
+许多类型都定义了string操作，这样在使用fmt打印的时候，就可以更加的好看
+#+end_admonition
+
+* packages 和 Files
+go中的package就像其他语言中的libraries 和 modules. 提供modularity(模块化),encapsulation(封装),separate compilation(隔离编译)和reuse(重用)特性。代码可以写在package中多个.go结尾的文件中。
+每个包都有一个独立的命名空间，当我们要在外部使用这个包中的东西的时候，必须要加上包名作为前缀。例如要是用image包中的Decode我们需要 image.Docode,要使用utf16包中的Decode我们需要utf16.Decode.
+要想导出package中的变量，定义，函数，我们必须在定义他们的时候以大写字母开头。我们举一个例子
+#+begin_src go :file tempconv.go
+  //Package tempconv performs Celsius and Fahrenheit conversions.
+  package tempconv
+
+  import "fmt"
+  type Celsius float64
+  type Fahrenheit float64
+
+  const (
+      AbsoluteZeroC Celsius = -273.15
+      FreezingC Celsius = 0
+      BoilingC celsius = 100
+  )
+
+  func (c Celsius) String() string {
+      return fmt.Sprintf("%g*c",c)
+  }
+
+  func (f Fahrenheit) String() string {
+      return fmt.Sprintf("%g*F",f)
+  }
+#+end_src
+
+#+begin_src go :file conv.go
+  package tempconv
+
+  // CToF converts a Celsius temperature to Fahrenheit.
+  func CToF (c Celsius) Fahrenheit {
+      return Fahrenheit(c*9/5 + 32)
+  }
+
+  //FToC converts a Fahrenheit temperature to Celsius.
+  func FToC (f Fahrenheit) Celsius {
+      return Celsius((f-32) *5 / 9)
+  }
+#+end_src
+在包中，所有文件都应以包定义开头，这里是 package tempconv. 当包被导入后，我们就可以使用tempconv.CToF 这样的形式使用包中暴露出来的成员(以大写字母开头)。
+** imports
+在go中，所有的包都被一个唯一的import path标识(string 类型) 比如"foo/tempconv"。import path 表明了包含包中的文件的路径. 除了import path 每个包还有一个package name, 相对import path要短很多. 通常一个包的名字通常是import path 的最后一个分割段 比如foot/tempconv 的包名就是tempconv.
+#+begin_src go
+  // Cf converts its numeric argument to Celsius and Fahrenheit.
+  package main
+
+  import (
+      "fmt"
+      "os"
+      "strconv"
+
+      "foo/tempconv"
+  )
+
+  func main() {
+      for _, arg := range os.Args[1:] {
+          t, err := strconv.ParseFloat(arg, 64)
+          if err != nil {
+              fmt.Fprintf(os.Stderr, "cf: %v\n", err)
+              os.Exit(1)
+          }
+          f := tempconv.Fahrenheit(t)
+          c := tempconv.Celsius(t)
+          fmt.Printf("%s = %s, %s = %s\n",
+              f, tempconv.FToC(f), c, tempconv.CToF(c))
+      }
+  }
+#+end_src
+
+我们应直接使用tempconv(包名)而不是import path,我们也可以在import 的时候定义包的别名以防止冲突.
+#+begin_src go 
+  package main
+
+  import (
+      "fmt"
+      "os"
+      "strconv"
+
+      conv "foo/tempconv"
+  )
+
+
+  func main () {
+      for _, arg := range os.Args[1:] {
+          t,err := strconv.ParseFloat(arg,64)
+          if err != nil {
+              fmt.Fprintf(os.Stderr,"cf:%v\n",err)
+              os.Exit(1)
+          }
+          f := conv.Fahrenheit(t)
+          c := conv.Celsius(t)
+          fmt.Printf("%s = %s, %s = %s\n", f,conv.FToC(f),c,conv.CToF(c))
+      }
+  }
+#+end_src
+
+导入未使用的包是不被允许的，在编译前必须删除多余的导入，推荐使用golang.org/x/tools/cmd/goimports 工具。 它会自动导入和删除不必要的导入。
+** 包初始化
+package会按定义的顺序先初始化包级别的变量（但是会先解决依赖）
+#+begin_src go
+  var a = b + c // a initialized third, to 3
+  var b = f() // b initialized second, to 2, by calling f
+  var c = 1 // c initialized first, to 1
+
+  func f() int { return c + 1 }
+#+end_src
+
+为了使用导入的程序包，必须首先对其进行初始化，而包的初始化过程可以由这张图表示出来
+#+DOWNLOADED: https://cdn.learnku.com/uploads/images/202007/13/1/ejLR69f443.png!large @ 2022-06-20 20:28:37
+[[file:packages_和_Files/2022-06-20_20-28-37_ejLR69f443.png.png]]
+
+流程是
+1. 先导入包（递归导入）
+2. 初始化const
+3. 初始化var
+4. 调用init()函数
+#+attr_shortcode: :type warning :title warning :open true
+#+begin_admonition
+在golang中 init()函数会在初始化时被自动调用，但是init()函数不能够被手动调用。同一个包中可以出现多个init()函数，但是init()的调用顺序是不被保证的。所以尽量只写一个init()函数
+#+end_admonition
+#+attr_shortcode: :type warning :title warning :open true
+#+begin_admonition
+需要注意的是，golang中不允许导入了，但未被使用的包存在，也不允许定义了但未使用的变量存在
+#+end_admonition
