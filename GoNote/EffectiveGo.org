@@ -1,12 +1,12 @@
 #+OPTIONS: author:nil ^:{}
 #+HUGO_BASE_DIR: ~/Documents/myblog
-#+HUGO_SECTION: post/2022/03
-#+HUGO_CUSTOM_FRONT_MATTER: :toc true :mathjax true :author golang_official
+#+HUGO_SECTION: posts/2022/03
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true :math true :author golang_official
 #+HUGO_AUTO_SET_LASTMOD: t
 #+HUGO_DRAFT: false
 #+DATE: [2022-03-30 Wed 23:01]
 #+TITLE: effective_go
-#+HUGO_TAGS: go
+#+HUGO_TAGS: golang
 #+HUGO_CATEGORIES: golang
 
 this artical is copied from golang official
