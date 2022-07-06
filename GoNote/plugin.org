@@ -36,30 +36,30 @@ plugin的使用很简单，分为三个步骤。
 
 plugin目录下的plug.go是plug.so的源码文件， 主程序是test目录下的test.go
 1. 编写plugin程序 plug.go
-    #+begin_src go
-      package main
+   #+begin_src go
+     package main
 
-      import (
-          "fmt"
-      )
+     import (
+         "fmt"
+     )
 
-      func PrintHahaha() {
-          fmt.Println("Hahaha")
-      }
-      func CallInDirect() {
-          i:= 1
-          i++
-      }
-    #+end_src
+     func PrintHahaha() {
+         fmt.Println("Hahaha")
+     }
+     func CallInDirect() {
+         i:= 1
+         i++
+     }
+   #+end_src
 #+attr_shortcode: :type note :title note :open true
 #+begin_admonition
 必须要注意，plugin程序的包定义必须是package main 可以没有main函数。同一个plugin程序的init函数只会被调用一次，重复加载后也不会再被调用(就是说 plugin在第一次被打开时，会调用包里面的init函数，但是后面再次打开init是不会再被调用的)
 #+end_admonition
 2. 使用-buildmode=plugin参数编译
-    #+begin_src sh
-    cd plugin
-    go build -buildmode=plugin -o plug.so ./plug.go
-    #+end_src
+   #+begin_src sh
+     cd plugin
+     go build -buildmode=plugin -o plug.so ./plug.go
+   #+end_src
 3. 编写调用的主程序test.go
    #+begin_src go
      package main
@@ -183,7 +183,7 @@ plugin目录下的plug.go是plug.so的源码文件， 主程序是test目录下�
 
 差不多是三倍的差距，但是这里，测试素材比较简单。如果让测试素材里面跑一些比较耗时的逻辑呢。
 + CallDirect
-    #+begin_src go
+  #+begin_src go
     func CallDirect() {
         for i := 0; i < 1000; i++ {
 
@@ -191,9 +191,9 @@ plugin目录下的plug.go是plug.so的源码文件， 主程序是test目录下�
         // i := 10
         // i++
     }
-    #+end_src
+  #+end_src
 + CallInDirect
-    #+begin_src go
+  #+begin_src go
     func CallInDirect() {
         for i := 0; i < 1000; i++ {
 
@@ -201,7 +201,7 @@ plugin目录下的plug.go是plug.so的源码文件， 主程序是test目录下�
         // i := 10
         // i++
     }
-    #+end_src
+  #+end_src
 
 跑分结果
 + BenchmarkCallDirect
