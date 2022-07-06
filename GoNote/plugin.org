@@ -183,25 +183,25 @@ plugin目录下的plug.go是plug.so的源码文件， 主程序是test目录下�
 
 差不多是三倍的差距，但是这里，测试素材比较简单。如果让测试素材里面跑一些比较耗时的逻辑呢。
 + CallDirect
-#+begin_src go
-  func CallDirect() {
-      for i := 0; i < 1000; i++ {
+    #+begin_src go
+    func CallDirect() {
+        for i := 0; i < 1000; i++ {
 
-      }
-      // i := 10
-      // i++
-  }
-#+end_src
+        }
+        // i := 10
+        // i++
+    }
+    #+end_src
 + CallInDirect
-#+begin_src go
-  func CallInDirect() {
-      for i := 0; i < 1000; i++ {
+    #+begin_src go
+    func CallInDirect() {
+        for i := 0; i < 1000; i++ {
 
-      }
-      // i := 10
-      // i++
-  }
-#+end_src
+        }
+        // i := 10
+        // i++
+    }
+    #+end_src
 
 跑分结果
 + BenchmarkCallDirect
