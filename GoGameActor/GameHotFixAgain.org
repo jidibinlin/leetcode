@@ -1,0 +1,38 @@
+#+startup: latexpreview
+#+OPTIONS: author:nil ^:{}
+#+HUGO_BASE_DIR: ~/Documents/myblog
+#+HUGO_SECTION: /posts/2022/07
+#+HUGO_CUSTOM_FRONT_MATTER: :toc true :math true
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_PAIRED_SHORTCODES: admonition
+#+HUGO_DRAFT: false
+#+DATE: [2022-07-17 Sun 19:47]
+#+TITLE: GoGameActor104 再谈热更（为什么lua这种脚本语言在游戏中受青睐）
+#+HUGO_TAGS: game-framework lua golang
+#+HUGO_CATEGORIES: game-framework lua golang
+#+DESCRIPTION: 为什么lua这种动态类型的语言会在游戏中备受青睐
+#+begin_export html
+<!--more-->
+#+end_export
+
+* introduction
+之前写过一篇介绍热更的博客[[https://jidibinlin.github.io/gamehotfix/][hotfix introduction]] 。但是最近发现在静态类型语言中做热更有点纯属给自己找不痛快的意思。在我思考的过程中我发现了一个非常不痛快的点就是逻辑代码和数据之间无法避免耦合，这个点会导致一些比较棘手的问题。
+之前说过，无状态服务器的热更可以通过进程切换，快速重启这样的方式进行热更（还有用docker做热更的）。 而状态服务器就需要做更复杂的事情，其中就包括状态的迁移，逻辑的更新。状态服务器更新对于动态语言来说不是什么难事，但是对于静态语言来说真的是件找不痛快的事情。
+
+那么现在我就我目前的工作经验谈谈这些不痛快, 最近在用golang, 所以下面都是基于后端使用golang的假设。
+* point one，同一数据结构和多个模块业务耦合, 数据结构修改导致不得不重新编译
+我目前待过的游戏公司只有两家，那么写新业务的大致流程是
+#+begin_src plantuml :file CHANGE.png
+  @startuml
+  start
+  :熟悉业务需求;
+  :前后端商量解决方案;
+  :确定前后端通信协议(protobuf);
+  :开始编写业务逻辑;
+  :前后端联调;
+  stop
+  @enduml
+#+end_src
+那么你应该看到中间有个环节叫做 *确定前后端通信协议* 问题就出现在这个地方。一般后端的业务代码会将protobuf生成的协议代码,这份代码会作为数据结构链接编译进程序当中。问题就出现在这个地方，生成的协议代码是数据结构，而逻辑代码无法避免使用这些数据结构的。
+
+静态语言需要先编译可执行程序，才能部署。那么作为前后端沟通的协议代码要怎么打入正在运行的进程中？
